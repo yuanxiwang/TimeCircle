@@ -18,7 +18,6 @@ import android.view.SurfaceHolder;
 import java.util.Calendar;
 
 public class MainWallpaper extends WallpaperService {
-    private SurfaceHolder mHolder;
     private Paint mSecPaint, mMinPaint, mHourPaint, mDayPaint, mMonthPaint, mYearPaint, mBgPaint;
     private int screenWidth;
     private int screenHeight;
