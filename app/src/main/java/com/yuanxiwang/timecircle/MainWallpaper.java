@@ -50,6 +50,7 @@ public class MainWallpaper extends WallpaperService {
                 public void run() {
                     onDraw();
                 }
+
             };
         }
 
