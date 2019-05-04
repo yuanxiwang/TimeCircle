@@ -32,7 +32,9 @@ public class TimeCircleView extends View {
     private int bgRes = -1;
     private int textSize = 25;
     private int distance = 25;
-
+    private int offsetX = 0;
+    private int offsetY = 0;
+    private int offsetAngle = 0;
     public TimeCircleView(Context context) {
         this(context, null);
     }
@@ -154,18 +156,17 @@ public class TimeCircleView extends View {
             int rightStartY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
             int rightEndX = (int) (screenWidth - mSecPaint.measureText(secondsString) - mMinPaint.measureText(minString) - mHourPaint.measureText(hourString) - mDayPaint.measureText(dayString));
             int rightEndY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
-            Point startPoint = new Point(rightStartX - 5*distance, rightStartY);
-            Point endPoint = new Point(rightEndX - 5*distance, rightEndY);
+            Point startPoint = new Point(rightStartX - 5*distance + offsetX, rightStartY + offsetY);
+            Point endPoint = new Point(rightEndX - 5*distance + offsetX, rightEndY + offsetY);
             if (i == 0) {
                 mMonthPaint.setColor(currentColor);
-                Path path = new Path();
-                path.moveTo(endPoint.x, endPoint.y);
-                path.lineTo(rightEndX + mMonthPaint.measureText("月"), endPoint.y);
-                canvas.drawTextOnPath("月", path, 0, 0, mMonthPaint);
+                Point monthStartPoint = new Point(endPoint.x + offsetX, endPoint.y + offsetY);
+                Point monthEndPoint = new Point((int) (rightEndX + mMonthPaint.measureText("月") + offsetX), endPoint.y + offsetY);
+                drawTextCircle(canvas, "月", monthStartPoint, monthEndPoint, offsetAngle, mMonthPaint);
             } else {
                 mMonthPaint.setColor(normalColor);
             }
-            double angle = 360f * i * Math.PI / (12 * 180);
+            double angle = 360f * i * Math.PI / (12 * 180) + offsetAngle;
             drawTextCircle(canvas, monthString, startPoint, endPoint, angle, mMonthPaint);
         }
     }
@@ -185,19 +186,18 @@ public class TimeCircleView extends View {
             } else {
                 dayString = switchIntToString(day % 10, false);
             }
-            double angle = 360f * i * Math.PI / (currentMonthDay * 180);
+            double angle = 360f * i * Math.PI / (currentMonthDay * 180) + offsetAngle;
             int rightStartX = (int) (screenWidth - mSecPaint.measureText(secondsString) - mMinPaint.measureText(minString) - mHourPaint.measureText(hourString) - mDayPaint.measureText(dayString));
             int rightStartY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
             int rightEndX = (int) (screenWidth - mSecPaint.measureText(secondsString) - mMinPaint.measureText(minString) - mHourPaint.measureText(hourString));
             int rightEndY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
-            Point startPoint = new Point(rightStartX - 4*distance, rightStartY);
-            Point endPoint = new Point(rightEndX - 4*distance, rightEndY);
+            Point startPoint = new Point(rightStartX - 4*distance + offsetX, rightStartY + offsetY);
+            Point endPoint = new Point(rightEndX - 4*distance + offsetX, rightEndY + offsetY);
             if (i == 0) {
                 mDayPaint.setColor(currentColor);
-                Path path = new Path();
-                path.moveTo(endPoint.x, endPoint.y);
-                path.lineTo(endPoint.x + mDayPaint.measureText("号"), endPoint.y);
-                canvas.drawTextOnPath("号", path, 0, 0, mDayPaint);
+                Point dayStartPoint = new Point(endPoint.x + offsetX, endPoint.y + offsetY);
+                Point dayEndPoint = new Point((int) (endPoint.x + mDayPaint.measureText("号") + offsetX), endPoint.y + offsetY);
+                drawTextCircle(canvas, "号", dayStartPoint, dayEndPoint, offsetAngle, mDayPaint);
             } else {
                 mDayPaint.setColor(normalColor);
             }
@@ -221,19 +221,18 @@ public class TimeCircleView extends View {
             } else {
                 hourString = switchIntToString(hour % 10, false);
             }
-            double angle = 360f * i * Math.PI / (24 * 180);
+            double angle = 360f * i * Math.PI / (24 * 180) + offsetAngle;
             int rightStartX = (int) (screenWidth - mSecPaint.measureText(secondsString) - mMinPaint.measureText(minString) - mHourPaint.measureText(hourString));
             int rightStartY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
             int rightEndX = (int) (screenWidth - mSecPaint.measureText(secondsString) - mMinPaint.measureText(minString));
             int rightEndY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
-            Point startPoint = new Point(rightStartX - 3*distance, rightStartY);
-            Point endPoint = new Point(rightEndX - 3*distance, rightEndY);
+            Point startPoint = new Point(rightStartX - 3*distance + offsetX, rightStartY + offsetY);
+            Point endPoint = new Point(rightEndX - 3*distance + offsetX, rightEndY + offsetY);
             if (i == 0) {
                 mHourPaint.setColor(currentColor);
-                Path path = new Path();
-                path.moveTo(endPoint.x, endPoint.y);
-                path.lineTo(endPoint.x + mHourPaint.measureText("时"), endPoint.y);
-                canvas.drawTextOnPath("时", path, 0, 0, mHourPaint);
+                Point hourStartPoint = new Point(endPoint.x + offsetX, endPoint.y + offsetY);
+                Point hourEndPoint = new Point((int) (endPoint.x + mHourPaint.measureText("时") + offsetX), endPoint.y + offsetY);
+                drawTextCircle(canvas, "时", hourStartPoint, hourEndPoint, offsetAngle, mHourPaint);
             } else {
                 mHourPaint.setColor(normalColor);
             }
@@ -261,19 +260,18 @@ public class TimeCircleView extends View {
             } else {
                 minString = switchIntToString(min % 10, false);
             }
-            double angle = 360f * i * Math.PI / (60 * 180);
+            double angle = 360f * i * Math.PI / (60 * 180) + offsetAngle;
             int rightStartX = (int) (screenWidth - mSecPaint.measureText(secondsString) - mMinPaint.measureText(minString));
             int rightStartY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
             int rightEndX = (int) (screenWidth - mSecPaint.measureText(secondsString));
             int rightEndY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
-            Point startPoint = new Point(rightStartX - 2*distance, rightStartY);
-            Point endPoint = new Point(rightEndX - 2*distance, rightEndY);
+            Point startPoint = new Point(rightStartX - 2*distance + offsetX, rightStartY + offsetY);
+            Point endPoint = new Point(rightEndX - 2*distance  + offsetX, rightEndY + offsetY);
             if (i == 0) {
                 mMinPaint.setColor(currentColor);
-                Path path = new Path();
-                path.moveTo(endPoint.x, endPoint.y);
-                path.lineTo(endPoint.x + mMinPaint.measureText("分"), endPoint.y);
-                canvas.drawTextOnPath("分", path, 0, 0, mMinPaint);
+                Point minStartPoint = new Point(endPoint.x + offsetX, endPoint.y + offsetY);
+                Point minEndPoint = new Point((int) (endPoint.x + mMinPaint.measureText("分") +  + offsetX), endPoint.y + offsetY);
+                drawTextCircle(canvas, "分", minStartPoint, minEndPoint, offsetAngle, mMinPaint);
             } else {
                 mMinPaint.setColor(normalColor);
             }
@@ -300,19 +298,18 @@ public class TimeCircleView extends View {
             } else {
                 secondsString = switchIntToString(seconds % 10, false);
             }
-            double angle = 360f * i * Math.PI / (60 * 180);
+            double angle = 360f * i * Math.PI / (60 * 180) + offsetAngle;
             int rightStartX = (int) (screenWidth - mSecPaint.measureText(secondsString));
             int rightStartY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
             int rightEndX = screenWidth;
             int rightEndY = (int) ((screenHeight - mSecPaint.getTextSize()) / 2);
-            Point startPoint = new Point(rightStartX - distance, rightStartY);
-            Point endPoint = new Point(rightEndX - distance, rightEndY);
+            Point startPoint = new Point(rightStartX - distance + offsetX, rightStartY + offsetY);
+            Point endPoint = new Point(rightEndX - distance + offsetX, rightEndY + offsetY);
             if (i == 0) {
                 mSecPaint.setColor(currentColor);
-                Path path = new Path();
-                path.moveTo(endPoint.x, endPoint.y);
-                path.lineTo(endPoint.x + mSecPaint.measureText("秒"), endPoint.y);
-                canvas.drawTextOnPath("秒", path, 0, 0, mSecPaint);
+                Point secStartPoint = new Point(endPoint.x + offsetX, endPoint.y + offsetY);
+                Point secEndPoint = new Point((int) (endPoint.x + mSecPaint.measureText("秒")  + offsetX), endPoint.y + offsetY);
+                drawTextCircle(canvas, "秒", secStartPoint, secEndPoint, offsetAngle, mSecPaint);
             } else {
                 mSecPaint.setColor(normalColor);
             }
@@ -445,4 +442,18 @@ public class TimeCircleView extends View {
         this.textSize = textSize;
     }
 
+    public void setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+        postInvalidate();
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+        postInvalidate();
+    }
+
+    public void setOffsetAngle(int offsetAngle) {
+        this.offsetAngle = offsetAngle;
+        postInvalidate();
+    }
 }

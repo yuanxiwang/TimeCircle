@@ -17,7 +17,20 @@
         android:layout_height="wrap_content"
         android:text="设置为壁纸"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_bg_color"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
+    <Button
+        android:id="@+id/btn_bg_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="更换背景色"
+        app:layout_constraintStart_toEndOf="@id/btn_setting"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <Button
+        android:id="@+id/btn_normal_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/btn_bg_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="更换时间颜色"/>
 </android.support.constraint.ConstraintLayout>

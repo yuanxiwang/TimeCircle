@@ -32,6 +32,11 @@
                 android:name="android.service.wallpaper"
                 android:resource="@xml/wallpaper" />
         </service>
+        <receiver android:name=".MainWallpaper$UpdateReceiver">
+            <intent-filter>
+                <action android:name="UpdateReceiver"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

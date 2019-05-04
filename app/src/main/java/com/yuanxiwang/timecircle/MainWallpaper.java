@@ -1,6 +1,9 @@
 package com.yuanxiwang.timecircle;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,10 +30,16 @@ public class MainWallpaper extends WallpaperService {
     private int bgRes = -1;
     private int textSize = 25;
     private int distance = 25;
+    private int offsetX = 0;
+    private int offsetY = 0;
+    private int offsetAngle = 0;
     private SurfaceHolder holder;
+    private UpdateReceiver updateReceiver;
 
     @Override
     public Engine onCreateEngine() {
+        updateReceiver = new UpdateReceiver();
+        registerReceiver(updateReceiver, new IntentFilter("UpdateReceiver"));
         return new MyEngine();
     }
 
@@ -61,17 +70,6 @@ public class MainWallpaper extends WallpaperService {
             screenWidth = ScreenUtil.getScreenWidth(getApplicationContext());
             screenHeight = ScreenUtil.getScreenHeight(getApplicationContext());
             initPaint();
-            new Thread(){
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(500);
-                        onDraw();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
         }
 
         @Override
@@ -88,7 +86,28 @@ public class MainWallpaper extends WallpaperService {
         public void onSurfaceCreated(SurfaceHolder holder) {
         }
 
+        @Override
+        public void onSurfaceDestroyed(SurfaceHolder holder) {
+            super.onSurfaceDestroyed(holder);
+            if (this.handler != null) {
+                this.handler.removeCallbacks(this.viewRunnable);
+            } else {
+                //nothing
+            }
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            if (this.handler != null) {
+                this.handler.removeCallbacks(this.viewRunnable);
+            } else {
+                //nothing
+            }
+        }
+
         private void onDraw() {
+            initPaint();
             this.handler.postDelayed(this.viewRunnable, 1000);
             Canvas canvas = holder.lockCanvas();
             // 对画布加锁
@@ -442,6 +461,39 @@ public class MainWallpaper extends WallpaperService {
             a.roll(Calendar.DATE, -1);//日期回滚一天，也就是最后一天
             int maxDate = a.get(Calendar.DATE);
             return maxDate;
+        }
+    }
+
+    public class UpdateReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.hasExtra("currentColor")) {
+                currentColor = intent.getIntExtra("currentColor", currentColor);
+            }
+            if (intent != null && intent.hasExtra("normalColor")) {
+                normalColor = intent.getIntExtra("normalColor", normalColor);
+            }
+            if (intent != null && intent.hasExtra("offsetAngle")) {
+                offsetAngle = intent.getIntExtra("offsetAngle", offsetAngle);
+            }
+            if (intent != null && intent.hasExtra("offsetX")) {
+                offsetX = intent.getIntExtra("offsetX", offsetX);
+            }
+            if (intent != null && intent.hasExtra("offsetY")) {
+                offsetY = intent.getIntExtra("offsetY", offsetY);
+            }
+            if (intent != null && intent.hasExtra("bgColor")) {
+                bgColor = intent.getIntExtra("bgColor", bgColor);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (updateReceiver != null) {
+            unregisterReceiver(updateReceiver);
+            updateReceiver = null;
         }
     }
 }
