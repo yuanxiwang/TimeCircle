@@ -24,15 +24,15 @@ public class MainWallpaper extends WallpaperService {
     private Paint mSecPaint, mMinPaint, mHourPaint, mDayPaint, mMonthPaint, mYearPaint, mBgPaint;
     private int screenWidth;
     private int screenHeight;
-    private int currentColor = Color.RED;
-    private int normalColor = Color.BLUE;
-    private int bgColor = Color.WHITE;
+    private static int currentColor = Color.RED;
+    private static int normalColor = Color.BLUE;
+    private static int bgColor = Color.WHITE;
     private int bgRes = -1;
     private int textSize = 25;
     private int distance = 25;
-    private int offsetX = 0;
-    private int offsetY = 0;
-    private int offsetAngle = 0;
+    private static int offsetX = 0;
+    private static int offsetY = 0;
+    private static int offsetAngle = 0;
     private SurfaceHolder holder;
     private UpdateReceiver updateReceiver;
 
@@ -464,7 +464,7 @@ public class MainWallpaper extends WallpaperService {
         }
     }
 
-    public class UpdateReceiver extends BroadcastReceiver{
+    public static class UpdateReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null && intent.hasExtra("currentColor")) {
